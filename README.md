@@ -23,6 +23,11 @@
 </div>
 <br />
 
+## About The Project
+The scope of this library is to allow users fetch data from different social medias in Python effortlessly. <br>
+It relies on the publicly exposed REST APIs from the company [Influencer Hunters](https://influencerhunters.com).
+<br>
+
 
 ## Getting Started
 
@@ -42,5 +47,12 @@ To use this library you only need Python 2 or 3 <br>
 
 4. Run the example
    ```sh
-   python example.py
+   python src/example.py
    ```
+   
+   
+   
+<!-- CONTACT -->
+## Contact
+
+Michele Rossignoli - product@influencerhunters.com - [linkedin](https://www.linkedin.com/in/michele-rossignoli-2052ab1a9/)
