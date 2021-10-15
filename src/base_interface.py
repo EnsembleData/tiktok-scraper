@@ -1,4 +1,5 @@
 import requests
+from datetime import datetime
 
 
 class Interface_IH:
@@ -13,3 +14,15 @@ class Interface_IH:
 				return r.json()["data"], True
 			
 		return r, False
+
+	def get_used_token(self, date="today"):
+		
+		if date == "today":
+			date = datetime.today().strftime('%Y%m%d')
+		
+		end_point = self.req_url+ '/customer/get-used-units'
+		payload = {'date':date, 'token':self.token_IH_API}
+
+		r = self.send_request(end_point, payload)
+		return r	
+
