@@ -3,13 +3,13 @@
 <br />
 <div align="center"> 
   <a href="https://influencerhunters.com">
-    <img src="images/IH_LOGO.png" alt="Logo" width="80" height="80">
+    <img src="images/tt_LOGO.png" alt="Logo" width="80" height="80">
   </a>
 
-  <h3 align="center">Social Media Scraper</h3>
+  <h3 align="center">TikTok Scraper</h3>
 
   <p align="center">
-    An utility library to scrape data from TikTok, Instagram, Twitch, Youtube, Twitter or Reddit in one line!
+    An utility library to scrape data from TikTok hassle-free
     <br />
     <a href="https://influencerhunters.com/"><strong>Go to the website »</strong></a>
     <br />
@@ -24,8 +24,8 @@
 <br />
 
 ## About The Project
-The scope of this library is to allow users fetch data from different social medias in Python effortlessly. <br>
-It relies on the publicly exposed REST APIs from the company [Influencer Hunters](https://influencerhunters.com).
+The scope of this library is to allow users fetch data from TikTok in Python effortlessly. <br>
+It relies on the (publicly) exposed REST APIs from the company [Influencer Hunters](https://influencerhunters.com).
 <br>
 
 
@@ -41,7 +41,7 @@ To use this library you only need Python 2 or 3 <br>
 1. Get a free API token at the [Influencer Hunters website](https://influencerhunters.com/index.html#contact-us) (no log in required). 
 2. Clone the repo
    ```sh
-   git clone https://github.com/InfluencerHunters/Social-Media-Scraper
+   git clone https://github.com/InfluencerHunters/TikTok-Scraper
    ```
 3. Open an example and insert your token for the variable TOKEN
 
