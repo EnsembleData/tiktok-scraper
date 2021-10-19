@@ -49,6 +49,7 @@ To use this library you only need Python 2 or 3 <br>
    ```sh
    python src/example.py
    ```
+   Or have a look at a [Jupyter Notebook example](https://github.com/InfluencerHunters/TikTok-Scraper/blob/main/src/AnalyzeUser.ipynb)
    
    
    
