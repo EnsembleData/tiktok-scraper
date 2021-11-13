@@ -3,13 +3,14 @@ from base_interface import Interface_IH
 
 class Tiktok_I_IH(Interface_IH):
 
-	def get_posts_from_hashtag(self, hashtag, depth = 1):	
+	def get_posts_from_hashtag(self, hashtag, cursor = 0):	
 		"""Fetch list of most popular posts related to this hashtag 
 		with information about users
 
 		Args:
 			hashtag (string): hashtag name
-			depth (int, optional): [description]. Defaults to 1.
+			cursor (int, optional): Starts with zero to get the first chunk of post.
+			Use the otputted cursor as input for next API call, to get next chunk.
 
 		Returns:
 			dictionary: content of the response
@@ -17,10 +18,10 @@ class Tiktok_I_IH(Interface_IH):
 		"""
 
 		end_point = self.req_url+ '/tt/hashtag/posts'
-		payload = {'name':hashtag, 'depth':depth, 'token':self.token_IH_API}
+		payload = {'name':hashtag, 'cursor':cursor, 'token':self.token_IH_API}
 
 		r = self.send_request(end_point, payload)
-		return r	
+		return r		
 
 	def get_user_info(self, name):	
 		"""Get profile information of a user	
