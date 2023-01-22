@@ -14,7 +14,7 @@
     <a href="https://influencerhunters.com/"><strong>Go to the website »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/othneildrew/Best-README-Template">View Demo</a>
+    <a href="https://www.influencerhunters.com/apis/docs">View Docs</a>
     ·
     <a href="https://github.com/InfluencerHunters/Social-Media-Scraper/issues">Report Bug</a>
     ·
@@ -38,7 +38,7 @@ To use this library you only need Python 2 or 3 <br>
 
 ### Usage
 
-1. Get a free API token at the [Influencer Hunters website](https://influencerhunters.com/index.html#contact-us) (no log in required). 
+1. Get a free API token registering on the [Influencer Hunters website](https://influencerhunters.com/register)
 2. Clone the repo
    ```sh
    git clone https://github.com/InfluencerHunters/TikTok-Scraper
@@ -56,4 +56,4 @@ To use this library you only need Python 2 or 3 <br>
 <!-- CONTACT -->
 ## Contact
 
-Michele Rossignoli - product@influencerhunters.com - [linkedin](https://www.linkedin.com/in/michele-rossignoli-2052ab1a9/)
+Francesco Cognolato - francesco@influencerhunters.com - [LinkedIn](https://www.linkedin.com/in/francesco-cognolato)
