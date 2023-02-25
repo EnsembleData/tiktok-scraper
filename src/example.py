@@ -1,13 +1,13 @@
-from tiktok_interface import Tiktok_I_IH
+from tiktok_interface import Tiktok_I_ED
 
 
 # Get a free token at www.influencerhunters.com
 TOKEN = "INSERT YOUR TOKEN HERE"
 
 #Initialize sender class 
-tt = Tiktok_I_IH(token_IH_API=TOKEN)
+tt = Tiktok_I_ED(token_ED_API=TOKEN)
 
-#Send the request to the IH server
+#Send the request to the ED server
 print("sending the request..")
 res, success = tt.get_hashtag_posts(name = "magic", cursor = 0)
 
