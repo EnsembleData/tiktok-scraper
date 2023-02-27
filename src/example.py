@@ -1,7 +1,7 @@
 from tiktok_interface import Tiktok_I_ED
 
 
-# Get a free token at www.influencerhunters.com
+# Get a free token at https://www.ensembledata.com/register
 TOKEN = "INSERT YOUR TOKEN HERE"
 
 #Initialize sender class 
