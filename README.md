@@ -24,6 +24,7 @@ Extras: <br>
 This is not required, but keeps this project's dependencies separate from your other projects by installing them locally instead of globally.
 ```bash
 python3 -m venv .venv
+source .venv/bin/activate
 ```
 
 Install the `ensembledata` python package, which we'll later use to fetch data from the EnsembleData API.
@@ -158,7 +159,7 @@ print(result.data)
 
 Let's take a look at what the api responded with:
 
-```json
+```python
 {
     "data": [
         {"title": "Book 1", ...},
@@ -179,7 +180,7 @@ result = api.get_books(cursor=20)
 print(result.data)
 ```
 
-```json
+```python
 {
     "data": [
         {"title": "Book 21", ...},
@@ -190,6 +191,8 @@ print(result.data)
     "nextCursor": 40
 }
 ```
+
+Great, it sent us the next 20 books, and another `nextCursor` we can use to get more books.
 
 Viola, this is how you can use a cursor to iterate over a list of items via API.
 
