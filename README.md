@@ -84,7 +84,7 @@ posts = result.data["data"]
 
 That easy! This endpoint provides two extra parameters we can use to configure the request. The first is the `max_cursor` which we can use to tell the API to stop fetching posts after a certain cursor value and the second is the `days` parameter, which we can use to filter out posts older than the specified number of days.
 
-Here we are fetching the first 2000 posts that use the hashtag `magic` and are at most 7 days old.
+Here we are fetching those that use the hashtag `magic` and are at most 7 days old within the first 2000 posts.
 
 ```python
 result = client.tiktok.full_hashtag_search(hashtag="magic", max_cursor=2_000, days=7)
