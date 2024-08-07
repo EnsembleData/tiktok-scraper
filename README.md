@@ -71,6 +71,8 @@ You can continue this process until you've fetched all the available posts for t
 
 The maximum number of posts you can fetch for a given hashtag varies depending on the popularity of the hashtag. Very popular hashtags tend to have a maximum of **4000-5000 posts**, while some hashtags may not have any posts at all.
 
+> For more details on the Hashtag Search endpoint, check out the [Hashtag Search API docs](https://ensembledata.com/apis/docs#tag/Tiktok/operation/full_search_hashtag_tt_hashtag_recent_posts_get).
+
 ### Automatic Cursor Handling
 
 The second endpoint is the `Full Hashtag Search`, whose functionality is a lot like it sounds. It fetches all the posts available for a given hashtag in one go. Under the hood, it uses the same `Hashtag Search` endpoint we used above, but it handles the cursor for you. Let's take a look.
@@ -82,12 +84,14 @@ posts = result.data["data"]
 
 That easy! This endpoint provides two extra parameters we can use to configure the request. The first is the `max_cursor` which we can use to tell the API to stop fetching posts after a certain cursor value and the second is the `days` parameter, which we can use to filter out posts older than the specified number of days.
 
-Here we are fetching the first 2000 posts that use the hashtag `magic` and at most 7 days old.
+Here we are fetching the first 2000 posts that use the hashtag `magic` and are at most 7 days old.
 
 ```python
 result = client.tiktok.full_hashtag_search(hashtag="magic", max_cursor=2_000, days=7)
 posts = result.data["data"]
 ```
+
+> For more details on the Full Hashtag Search endpoint, check out the [Full Hashtag Search API docs](https://ensembledata.com/apis/docs#tag/Tiktok/operation/full_search_hashtag_tt_hashtag_recent_posts_get).
 
 
 
@@ -196,7 +200,12 @@ Great, it sent us the next 20 books, and another `nextCursor` we can use to get 
 
 Viola, this is how you can use a cursor to iterate over a list of items via API.
 
+### References
 
+- [EnsembleData API Documentation](https://ensembledata.com/apis/docs)
+- [EnsembleData TikTok API](https://ensembledata.com/tiktok-api)
+- [EnsembleData TikTok Scraping Overview](https://ensembledata.com/tiktok-api/scraping-overview)
+- [EnsembleData python package](https://github.com/ensembledata/ensembledata-python)
 
 
 
