@@ -87,7 +87,7 @@ posts = result.data["data"]
 
 That easy! This endpoint provides two extra parameters we can use to configure the request. The first is the `max_cursor` which we can use to tell the API to stop fetching posts after a certain cursor value and the second is the `days` parameter, which we can use to filter out posts older than the specified number of days.
 
-Here we are fetching the first 2000 posts that use the hashtag `magic` and are at most 7 days old.
+Here we are fetching those that use the hashtag `magic` and are at most 7 days old within the first 2000 posts.
 
 ```python
 result = client.tiktok.full_hashtag_search(hashtag="magic", max_cursor=2_000, days=7)
@@ -156,13 +156,13 @@ result = client.tiktok.user_info_from_secuid("MS4wLjABAAA...")
 
 user = result.data["user"]
 print("Username:", user["unique_id"])
-print("Nickanme:", user["nickname"])
+print("Nickname:", user["nickname"])
 print("Followers:", user["follower_count"])
 print("Posts:", user["aweme_count"])
 print("Likes:", user["total_favorited"])
 ```
 
-> The `user_info_from_secuid` endpoint has an optional `alternative_method` parameter, which when set to `True` will send back a different payload which contains some different information. There is a lot of overlap between the different responses for `alternative_method=True` and `alternative_method=False`, but each contain some information the other does not. For example, `alternative_method=True` gives you information about the accounts category.
+> The `user_info_from_secuid` endpoint has an optional `alternative_method` parameter, which when set to `True` will send back a different payload which contains some different information. There is a lot of overlap between the different responses for `alternative_method=True` and `alternative_method=False`, but each contain some information the other does not. For example, `alternative_method=True` gives you information about the account's category.
 
 ### User liked posts
 
