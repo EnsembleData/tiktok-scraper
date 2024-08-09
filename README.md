@@ -42,7 +42,10 @@ client = EDClient("INSERT API TOKEN")
 
 ... and you're all ready to go! Let's dive into what you can do with the TikTok API.
 
-## Monitoring Hashtags
+<br>
+<br>
+
+## ✨ Monitoring Hashtags ✨
 
 There are two endpoints you can use to find TikTok posts using a specific hashtag. The first is the `Hashtag Search` which takes two parameters, a `hashtag` and a `cursor` [(What is a cursor?)](#cursors) and returns a list of about 20 posts.
 
@@ -93,17 +96,8 @@ posts = result.data["data"]
 
 > For more details on the Full Hashtag Search endpoint, check out the [Full Hashtag Search API docs](https://ensembledata.com/apis/docs#tag/Tiktok/operation/full_search_hashtag_tt_hashtag_recent_posts_get).
 
-
-
-
-
-
-
-
-
-
-
-
+<br>
+<br>
 
 ## Monitoring Keywords
 
@@ -112,13 +106,64 @@ posts = result.data["data"]
 
 ## TikTok User Posts
 
-### From secuid
-### From username
 
-## TikTok User Info
 
 ### From secuid
 ### From username
+
+<br>
+<br>
+
+## ✨ User Info ✨
+
+There are a few different ways we can get TikTok user information via the API. Similarly to when fetching user posts, we need to provide either a `username` or a `sec_uid` (secondary user id).
+
+Here's just some of the key information you can find with the user info endpoints:
+
+- region
+- nickname
+- username
+- total likes
+- followers
+- number of posts
+- bio / signature
+- verified status
+- profile picture
+
+
+> You'll also find the `uid` (user id) and the `sec_uid` (secondary user id) which you may need for fetching data from other endpoints.
+
+
+To see all the available information, head over to the documentation for the following endpoints and check out the response samples.
+
+### User Info from Username
+
+[View Documentation](https://ensembledata.com/apis/docs#tag/Tiktok/operation/tiktok_user_info_from_username)
+
+
+```python
+result = client.tiktok.user_info_from_username("zachking")
+```
+
+### User Info from Secuid
+
+[View Documenation](https://ensembledata.com/apis/docs#tag/Tiktok/operation/tiktok_user_info_from_secuid)
+
+<!-- TODO: Talk about what else is available with alternative method -->
+
+```python
+result = client.tiktok.user_info_from_secuid("MS4wLjABAAA...")
+
+user = result.data["user"]
+print("Username:", user["unique_id"])
+print("Nickanme:", user["nickname"])
+print("Followers:", user["follower_count"])
+print("Posts:", user["aweme_count"])
+print("Likes:", user["total_favorited"])
+```
+
+> The `user_info_from_secuid` endpoint has an optional `alternative_method` parameter, which when set to `True` will send back a different payload which contains some different information. There is a lot of overlap between the different responses for `alternative_method=True` and `alternative_method=False`, but each contain some information the other does not. For example, `alternative_method=True` gives you information about the accounts category.
+
 ### User liked posts
 
 ## TikTok User Followers
