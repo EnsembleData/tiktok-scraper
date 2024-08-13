@@ -6,13 +6,13 @@ This guide will walk you through how to use the EnsembleData API to fetch data f
 
 [Setup](#setup) <br>
 [Monitoring Hashtags](#monitoring-hashtags) <br>
-[Monitoring Keywords](#monitoring-users) <br>
-[User Details](#monitoring-users) <br>
-[User Posts](#monitoring-users) <br>
-[User Followers](#monitoring-users) <br>
-[Post Details](#monitoring-users) <br>
-[Post Comments](#monitoring-users) <br>
-[Music](#monitoring-users) <br>
+[Monitoring Keywords](#monitoring-keywords) <br>
+[User Info](#users-info) <br>
+[User Posts](#user-posts) <br>
+[User Followers](#user-followers) <br>
+[Post Info](#post-info) <br>
+[Post Comments](#post-comments) <br>
+[Music](#music) <br>
 
 Extras 📚 <br>
 [What is a cursor?](#what-is-a-cursor) <br>
@@ -104,7 +104,7 @@ posts = result.data["data"]
 ### Manual Pagination
 ### Automatic Pagination
 
-## TikTok User Posts ✨
+## User Posts ✨
 
 
 
@@ -196,7 +196,7 @@ next_cursor = result.data.get("nextCursor")
 <br>
 <br>
 
-## TikTok User Followers ✨
+## User Followers ✨
 
 Now, let's dive into the data you can retreive around followers on TikTok.
 
@@ -256,7 +256,7 @@ Easy! We successfully used the cursor to get more results. You can continue this
 <br>
 <br>
 
-## TikTok Post Info ✨
+## Post Info ✨
 
 ### Single Post
 ### Multiple Posts
