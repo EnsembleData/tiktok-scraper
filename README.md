@@ -258,8 +258,58 @@ Easy! We successfully used the cursor to get more results. You can continue this
 
 ## Post Info ✨
 
+Let's look at fetching the data for a post on TikTok. The most basic way to do this is using the `post_info` endpoint which we'll take a look at first.
+
+Here's just some of the key information you can find with the post info endpoints:
+
+- plays, likes, comments, downloads, shares, collects, forwards
+- video url
+- video cover
+- post description
+- hashtags
+- music info
+- language
+- region
+- author info
+
+
+
 ### Single Post
+
+[Documentation](https://ensembledata.com/apis/docs#tag/Tiktok/operation/tiktok_post_info)
+
+Here we just need to supply the url for the TikTok post. You can easily find this by navigating to the post in your browers and copying the page url from the search bar. It should look like what we seen in the example below:
+
+```python
+result = client.tiktok.post_info(
+    url="https://www.tiktok.com/@daviddobrik/video/7165262254722534698",
+)
+post = result["data"][0]
+author_data = post["author"]
+music_data = post["music"]
+post_desc = post["desc"]
+likes = post["statistics"]["digg_count"]
+plays = post["statistics"]["play_count"]
+shares = post["statistics"]["share_count"]
+comments = post["statistics"]["comment_count"]
+```
+
 ### Multiple Posts
+
+If need to fetch data for many TikTok posts at once, then this is the endpoint for you. For this endpoint you'll need to extract the post ids and pass them in as a list. Note that the endpoint accepts a maxium of 100 post ids at once. If more than 100 ids are supplied the API will return an error notifying you of this.
+
+> You can either find the post ids via other endpoints or you can find them at the end of the post url as seen in the previous example.
+
+```python
+result = client.tiktok.multi_post_info(
+    aweme_ids=[
+        "7210531475052236078", 
+        "7102806710334606597", 
+        "710280671033460623434597"
+    ],
+)
+posts = result["data"]
+```
 
 <br>
 <br>
