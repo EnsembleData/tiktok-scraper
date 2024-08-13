@@ -99,12 +99,12 @@ posts = result.data["data"]
 <br>
 <br>
 
-## Monitoring Keywords
+## Monitoring Keywords ✨
 
 ### Manual Pagination
 ### Automatic Pagination
 
-## TikTok User Posts
+## TikTok User Posts ✨
 
 
 
@@ -168,7 +168,9 @@ print("Likes:", user["total_favorited"])
 
  The `user_info_from_secuid` endpoint has an optional `alternative_method` parameter, which when set to `True` will send back a different payload which contains some different information. There is a lot of overlap between the different responses for `alternative_method=True` and `alternative_method=False`, but each contain some information the other does not. For example, `alternative_method=True` gives you information about the account's category.
 
-### User liked posts
+### User Liked Posts
+
+[View Documenation](https://ensembledata.com/apis/docs#tag/Tiktok/operation/tiktok_user_liked_posts)
 
 If this information is publicly avaiable we can also fetch the posts that a user has liked. To do so we'll need the user's `sec_uid`.
 
@@ -180,7 +182,7 @@ posts = result.data["liked_posts"]
 next_cursor = result.data.get("nextCursor")
 ```
 
-If the next cursor value is not null, we can fetch more posts by making another request likes so.
+If the next cursor value is not null, we can fetch more posts by making another request likes so [(What is a cursor?)](#cursors).
 
 ```python
 result = client.tiktok.user_liked_posts(
@@ -194,15 +196,67 @@ next_cursor = result.data.get("nextCursor")
 <br>
 <br>
 
-## TikTok User Followers
+## TikTok User Followers ✨
+
+Now, let's dive into the data you can retreive around followers on TikTok.
 
 ### Followers
+
+[Documentation](https://ensembledata.com/apis/docs#tag/Tiktok/operation/tiktok_user_followers)
+
+Our TikTok Followers API allows you to retrieve a user's most recent 5000 followers, i.e the last 5000 people to follow this user. To do so we'll require both the the user id and the secondary user id.
+
+```python
+result = client.tiktok.user_followers(
+    id="6784819479778378757",
+    sec_uid="MS4wLjABAAAAQ45...",
+)
+
+followers = result.data["followers"]
+follower_count = result.data["total"]
+next_cursor = result.data["nextCursor"]
+```
+
+A single request will return 100 followers, to get more send another request, this time passing in the cursor value we got from the previous request ([What is a cursor?](#cursors)). Note: the maximum you can retrieve is 5000.
+
 ### Followings
 
+[Documentation](https://ensembledata.com/apis/docs#tag/Tiktok/operation/tiktok_user_followings)
+
+Additionally, you can fetch the 'followings', which are the people the user themself follows. This endpoint works very similarly to the endpoint to fetch followers:
+
+```python
+result = client.tiktok.user_followings(
+    id="6784819479778378757",
+    sec_uid="MS4wLjABAAAAQ45...",
+)
+
+followers = result.data["followings"]
+follower_count = result.data["total"]
+next_cursor = result.data.get("nextCursor")
+next_page_token = result.data.get("nextPageToken")
+```
+
+A single request will return 100 followings. To get more you'll need to use the `cursor` AND the `page_token`. Let's see how we can get the next chunk of followings below:
+
+```python
+result = client.tiktok.user_followings(
+    id="6784819479778378757",
+    sec_uid="MS4wLjABAAAAQ45...",
+    cursor=next_cursor,
+    page_token=next_page_token,
+)
+
+next_cursor = result.data.get("nextCursor")
+next_page_token = result.data.get("nextPageToken")
+```
+
+Easy! We successfully used the cursor to get more results. You can continue this process until there is no `nextCursor` or `nextPageToken` in the response, which indicates that there are no more retrievable results.
+
 <br>
 <br>
 
-## TikTok Post Info
+## TikTok Post Info ✨
 
 ### Single Post
 ### Multiple Posts
@@ -210,7 +264,7 @@ next_cursor = result.data.get("nextCursor")
 <br>
 <br>
 
-## Post Comments
+## Post Comments ✨
 
 ### Comments
 ### Replies
@@ -219,7 +273,7 @@ next_cursor = result.data.get("nextCursor")
 <br>
 <br>
 
-## Music
+## Music ✨
 
 ## Find music with keyword
 ## Find posts using music
