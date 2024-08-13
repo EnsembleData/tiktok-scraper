@@ -4,21 +4,21 @@ This guide will walk you through how to use the EnsembleData API to fetch data f
 
 ## Table of Contents
 
-[Setup](#setup) <br>
-[Monitoring Hashtags](#monitoring-hashtags) <br>
-[Monitoring Keywords](#monitoring-keywords) <br>
-[User Info](#users-info) <br>
-[User Posts](#user-posts) <br>
-[User Followers](#user-followers) <br>
-[Post Info](#post-info) <br>
-[Post Comments](#post-comments) <br>
-[Music](#music) <br>
+[Setup](#setup-) <br>
+[Monitoring Hashtags](#monitoring-hashtags-) <br>
+[Monitoring Keywords](#monitoring-keywords-) <br>
+[User Info](#users-info-) <br>
+[User Posts](#user-posts-) <br>
+[User Followers](#user-followers-) <br>
+[Post Info](#post-info-) <br>
+[Post Comments](#post-comments-) <br>
+[Music](#music-) <br>
 
 Extras 📚 <br>
 [What is a cursor?](#what-is-a-cursor) <br>
 
 
-## Setup  🛠️
+## Setup 🛠️
 
 (Optional) Create a virtual environment to run your python code in. <br>
 This is not required, but keeps this project's dependencies separate from your other projects by installing them locally instead of globally.
