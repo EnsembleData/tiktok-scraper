@@ -14,11 +14,11 @@ This guide will walk you through how to use the EnsembleData API to fetch data f
 [Post Comments](#monitoring-users) <br>
 [Music](#monitoring-users) <br>
 
-Extras: <br>
+Extras 📚 <br>
 [What is a cursor?](#what-is-a-cursor) <br>
 
 
-## Setup
+## Setup  🛠️
 
 (Optional) Create a virtual environment to run your python code in. <br>
 This is not required, but keeps this project's dependencies separate from your other projects by installing them locally instead of globally.
@@ -45,7 +45,7 @@ client = EDClient("INSERT API TOKEN")
 <br>
 <br>
 
-## ✨ Monitoring Hashtags ✨
+## Monitoring Hashtags ✨
 
 There are two endpoints you can use to find TikTok posts using a specific hashtag. The first is the `Hashtag Search` which takes two parameters, a `hashtag` and a `cursor` [(What is a cursor?)](#cursors) and returns a list of about 20 posts.
 
@@ -114,7 +114,7 @@ posts = result.data["data"]
 <br>
 <br>
 
-## ✨ User Info ✨
+## User Info ✨
 
 There are a few different ways we can get TikTok user information via the API. Similarly to when fetching user posts, we need to provide either a `username` or a `sec_uid` (secondary user id).
 
@@ -134,7 +134,7 @@ Here's just some of the key information you can find with the user info endpoint
 > You'll also find the `uid` (user id) and the `sec_uid` (secondary user id) which you may need for fetching data from other endpoints.
 
 
-To see all the available information, head over to the documentation for the following endpoints and check out the response samples.
+To see all the available information, head over to the documentation for the following endpoints and check out the response samples in the right panel.
 
 ### User Info from Username
 
@@ -142,7 +142,9 @@ To see all the available information, head over to the documentation for the fol
 
 
 ```python
-result = client.tiktok.user_info_from_username("zachking")
+result = client.tiktok.user_info_from_username(
+    username="zachking"
+)
 ```
 
 ### User Info from Secuid
@@ -152,7 +154,9 @@ result = client.tiktok.user_info_from_username("zachking")
 <!-- TODO: Talk about what else is available with alternative method -->
 
 ```python
-result = client.tiktok.user_info_from_secuid("MS4wLjABAAA...")
+result = client.tiktok.user_info_from_secuid(
+    sec_uid="MS4wLjABAAA..."
+)
 
 user = result.data["user"]
 print("Username:", user["unique_id"])
@@ -162,25 +166,58 @@ print("Posts:", user["aweme_count"])
 print("Likes:", user["total_favorited"])
 ```
 
-> The `user_info_from_secuid` endpoint has an optional `alternative_method` parameter, which when set to `True` will send back a different payload which contains some different information. There is a lot of overlap between the different responses for `alternative_method=True` and `alternative_method=False`, but each contain some information the other does not. For example, `alternative_method=True` gives you information about the account's category.
+ The `user_info_from_secuid` endpoint has an optional `alternative_method` parameter, which when set to `True` will send back a different payload which contains some different information. There is a lot of overlap between the different responses for `alternative_method=True` and `alternative_method=False`, but each contain some information the other does not. For example, `alternative_method=True` gives you information about the account's category.
 
 ### User liked posts
+
+If this information is publicly avaiable we can also fetch the posts that a user has liked. To do so we'll need the user's `sec_uid`.
+
+```python
+result = client.tiktok.user_liked_posts(
+    sec_uid="MS4wLjABAAA...",
+)
+posts = result.data["liked_posts"]
+next_cursor = result.data.get("nextCursor")
+```
+
+If the next cursor value is not null, we can fetch more posts by making another request likes so.
+
+```python
+result = client.tiktok.user_liked_posts(
+    sec_uid="MS4wLjABAAA...",
+    cursor=next_cursor
+)
+more_posts = result.data["liked_posts"]
+next_cursor = result.data.get("nextCursor")
+```
+
+<br>
+<br>
 
 ## TikTok User Followers
 
 ### Followers
 ### Followings
 
+<br>
+<br>
+
 ## TikTok Post Info
 
 ### Single Post
 ### Multiple Posts
+
+<br>
+<br>
 
 ## Post Comments
 
 ### Comments
 ### Replies
 
+
+<br>
+<br>
 
 ## Music
 
@@ -189,9 +226,10 @@ print("Likes:", user["total_favorited"])
 ## Music Info
 
 
+<br>
+<br>
 
-
-## What is a cursor?
+## What is a cursor? 📚
 
 So you don't know what a cursor is? Fear not, we've got you covered.
 
