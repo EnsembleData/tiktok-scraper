@@ -323,11 +323,119 @@ posts = result["data"]
 <br>
 <br>
 
-## Music ✨
+# Music ✨
 
-## Find music with keyword
-## Find posts using music
-## Music Info
+Music is another very important part of the TikTok ecosystem. The EnsembleData API has several endpoints that allow you to interact with music data.
+Let's start by looking at how we can find music using a keyword.
+
+## Music Search API
+
+[API Documentation](https://ensembledata.com/apis/docs#tag/Tiktok/operation/tiktok_music_search)
+
+Aside from supplying a keyword, you'll need to specify how you want the results to be filtered and sorted. Let's take a look at the options:
+
+### Sorting
+
+- `0`: sort by `relevance` (best keyword match, according to TikTok)
+- `1`: sort by `most_used` music
+- `2`: sort by `most_recent` music
+- `3`: sort by `shortest` music
+- `4`: sort by `longest` music
+
+### Filtering
+
+- `0`: No filter applied
+- `1`: only search music
+- `2`: only search music creators
+
+```python
+from ensembledata.api import EDClient
+
+client = EDClient("API_TOKEN")
+result = client.tiktok.music_search(
+    keyword="classical",
+    sorting="0",
+    filter_by="0",
+)
+
+music = result.data["music"]
+next_cursor = result.data.get("nextCursor")
+
+# Show the first music result
+print("Title:", music[0]["title"])
+print("Author:", music[0]["author"])
+print("Music ID:", music[0]["mid"])
+```
+
+
+
+### Fetch more results
+
+To search for more music, simply add the `cursor` parameter to the request, using the `nextCursor` value you got from the previous request.
+
+[What is a cursor?](/faqs/cursor)
+
+```python
+
+if next_cursor is None:
+    print("There are no more results")
+
+else:
+    result = client.tiktok.music_search(
+        keyword="classical",
+        sorting="0",
+        filter_by="0",
+        cursor=next_cursor,
+    )
+```
+
+## Music Posts API
+
+[API Documentation](https://ensembledata.com/apis/docs#tag/Tiktok/operation/tiktok_music_posts)
+
+Once you've got your hands on a music ID, you can use it to fetch posts that use that music.
+
+```python
+
+result = client.tiktok.music_posts(
+    music_id="6874200777853661442",
+)
+
+posts = result.data["aweme_list"]
+next_cursor = result.data.get("nextCursor")
+```
+
+### Fetching more posts
+
+To fetch more posts, use the `cursor` parameter.
+
+```python
+if next_cursor is None:
+    print("There are no more results")
+
+else:
+    result = client.tiktok.music_posts(
+        music_id="6874200777853661442",
+        cursor=next_cursor,
+    )
+```
+
+## Music Details API
+
+[API Documentation](https://ensembledata.com/apis/docs#tag/Tiktok/operation/tiktok_music_details)
+
+If you've got a music ID and want to get more information about it, you can use the `Music Details` endpoint.
+
+```python
+result = client.tiktok.music_details(
+    music_id="7063948643480488709",
+)
+
+# The number of videos which use this music item
+print("Usage count", result.data["user_count"])
+```
+
+In the response payload you can find links to the music itself, artist/author information, duration etc. We recommend perusing the response payload to see what else you can get from this endpoint.
 
 
 <br>
