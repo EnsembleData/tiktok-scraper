@@ -7,7 +7,7 @@ This guide will walk you through how to use the EnsembleData API to fetch data f
 [Setup](#setup) <br>
 [Monitoring Hashtags](#monitoring-hashtags) <br>
 [Monitoring Keywords](#monitoring-keywords) <br>
-[User Info](#users-info) <br>
+[User Info](#user-info) <br>
 [User Posts](#user-posts) <br>
 [User Followers](#user-followers) <br>
 [Post Info](#post-info) <br>
@@ -45,7 +45,7 @@ client = EDClient("INSERT API TOKEN")
 <br>
 <br>
 
-## Monitoring Hashtags ✨
+## Monitoring Hashtags
 
 There are two endpoints you can use to find TikTok posts using a specific hashtag. The first is the `Hashtag Search` which takes two parameters, a `hashtag` and a `cursor` [(What is a cursor?)](#cursors) and returns a list of about 20 posts.
 
@@ -157,8 +157,7 @@ result = client.tiktok.keyword_search(
 
 Warning 🚨
 
-    This doesn't necessarily mean that the posts returned will be only from the specified country, but rather that the posts are those shown in that country.
-
+This doesn't necessarily mean that the posts returned will be only from the specified country, but rather that the posts are those shown in that country.
 
 
 #### Sort posts
@@ -429,7 +428,7 @@ The endpoint accepts all the same parameters as the `User Posts From Username` A
 <br>
 <br>
 
-## User Info ✨
+## User Info
 
 There are a few different ways we can get TikTok user information via the API. Similarly to when fetching user posts, we need to provide either a `username` or a `sec_uid` (secondary user id).
 
@@ -511,7 +510,7 @@ next_cursor = result.data.get("nextCursor")
 <br>
 <br>
 
-## User Followers ✨
+## User Followers
 
 Now, let's dive into the data you can retreive around followers on TikTok.
 
@@ -571,7 +570,7 @@ Easy! We successfully used the cursor to get more results. You can continue this
 <br>
 <br>
 
-## Post Info ✨
+## Post Info
 
 Let's look at fetching the data for a post on TikTok. The most basic way to do this is using the `post_info` endpoint which we'll take a look at first.
 
@@ -806,7 +805,7 @@ Requests sent: 3
 <br>
 <br>
 
-# Music ✨
+# Music
 
 Music is another very important part of the TikTok ecosystem. The EnsembleData API has several endpoints that allow you to interact with music data.
 Let's start by looking at how we can find music using a keyword.
