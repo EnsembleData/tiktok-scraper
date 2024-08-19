@@ -4,21 +4,21 @@ This guide will walk you through how to use the EnsembleData API to fetch data f
 
 ## Table of Contents
 
-[Setup](#setup-) <br>
-[Monitoring Hashtags](#monitoring-hashtags-) <br>
-[Monitoring Keywords](#monitoring-keywords-) <br>
-[User Info](#users-info-) <br>
-[User Posts](#user-posts-) <br>
-[User Followers](#user-followers-) <br>
-[Post Info](#post-info-) <br>
-[Post Comments](#post-comments-) <br>
-[Music](#music-) <br>
+[Setup](#setup) <br>
+[Monitoring Hashtags](#monitoring-hashtags) <br>
+[Monitoring Keywords](#monitoring-keywords) <br>
+[User Info](#users-info) <br>
+[User Posts](#user-posts) <br>
+[User Followers](#user-followers) <br>
+[Post Info](#post-info) <br>
+[Post Comments](#post-comments) <br>
+[Music](#music) <br>
 
 Extras 📚 <br>
 [What is a cursor?](#what-is-a-cursor) <br>
 
 
-## Setup 🛠️
+## Setup
 
 (Optional) Create a virtual environment to run your python code in. <br>
 This is not required, but keeps this project's dependencies separate from your other projects by installing them locally instead of globally.
@@ -99,17 +99,332 @@ posts = result.data["data"]
 <br>
 <br>
 
-## Monitoring Keywords ✨
+# Monitoring Keywords
 
-### Manual Pagination
-### Automatic Pagination
+We've already seen how to monitor hashtags, and monitoring keywords is strikingly similar. Just like for hashtags, there are two endpoints for fetching posts based on a keyword. Let's first look at the `Keyword Search` API.
 
-## User Posts ✨
+## Keyword Search API
+
+[API Documentation](https://ensembledata.com/apis/docs#tag/Tiktok/operation/tiktok_keyword_search)
+
+Here's how you can find posts for the keyword `tesla`. 
+
+We'll also specify the `period` to search within, which can be one of 0, 1, 7, 30, 90, 180 days. We use `period=180` for this example, and as such, we'll only get posts from the last 180 days.
+
+
+```python
+from ensembledata.api import EDClient
+
+client = EDClient("API_TOKEN")
+result = client.tiktok.keyword_search(
+    keyword="tesla"
+    period="180",
+)
+
+posts = result.data["data"]
+print("Number of posts:", len(posts))
+
+# We'll need this later!
+next_cursor = result.data.get("nextCursor")
+```
+
+**Output**:
+```bash
+Number of posts: 20
+```
+
+Great! We've got 20 posts, now let's see how we can get more.
+
+### Extra parameters
+
+For a complete overview of the available parameters, please refer to the [API Documentation](https://ensembledata.com/apis/docs#tag/Tiktok/operation/tiktok_keyword_search) for this endpoint.
+
+#### Specify country
+
+TikTok presents different posts for a keyword based on the country the user is in. The `country` parameter allows you to take advantage of this by specifying which country you would like to do the keyword search for. 
+
+The country is specified via the [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) country code. For example, let's search using the keyword `tesla` in the United States.
+
+
+```python
+result = client.tiktok.keyword_search(
+    keyword="tesla", 
+    period="180", 
+    country="US"
+)
+```
+
+
+Warning 🚨
+
+    This doesn't necessarily mean that the posts returned will be only from the specified country, but rather that the posts are those shown in that country.
 
 
 
-### From secuid
-### From username
+#### Sort posts
+
+You can specify how to sort the posts via the `sorting` parameter which 
+
+- `0` - Sorts the posts by relevance (default)
+- `1` - Sorts the posts by likes
+
+```python
+result = client.tiktok.keyword_search(
+    keyword="tesla", 
+    period="180", 
+    sorting="1"
+)
+```
+
+### Fetching more posts
+
+To get more posts, we'll join forces with our friend the cursor again. To get the next batch of posts, we'll call the `Keyword Search` API again but this time with the next cursor value we got from the previous request.
+
+```python
+result = client.tiktok.keyword_search(keyword="tesla", cursor=next_cursor)
+posts = result.data["data"]
+next_cursor = result.data.get("nextCursor")
+```
+
+You can continue this process until you've fetched all the available posts for this keyword. You'll know you've fetched all the posts once there is no 'nextCursor' in the response.
+
+### Cursor handling example
+
+Here's an example of how you could manually handle the cursor to fetch posts for a given keyword.
+
+```python
+posts = list()
+cursor = None
+
+for _ in range(10):
+    result = client.tiktok.keyword_search(keyword="tesla", cursor=cursor)
+    posts.extend(result.data["data"])
+    cursor = result.data.get("nextCursor")
+    
+    # If there is no next cursor, we've fetched all the available posts
+    if cursor is None:
+        break
+
+print("Number of posts:", len(posts))
+```
+
+**Output**:
+```bash
+Number of posts: 200
+```
+
+Handling the cursor manually like this is perfectly fine and not all too difficult, however, the next section will show you how you can get the EnsembleData API to do this for you.
+
+## Full Keyword Search API
+
+[API Documentation](https://ensembledata.com/apis/docs#tag/Tiktok/operation/tiktok_full_hashtag_search)
+
+### Automatic cursor handling
+
+The `Full Keyword Search` API is very similar to the `Keyword Search` API, but it automatically handles the cursor for you. This means you can fetch all the posts for a keyword without having to worry about the cursor.
+
+```python
+result = client.tiktok.full_keyword_search(
+    keyword="tesla", 
+    period="180"
+)
+posts = result.data["data"]
+print("Number of posts:", len(posts))
+```
+
+**Output**:
+
+```bash
+Number of posts: 1366
+```
+
+There we go! We've fetched all the posts for the keyword `tesla` in one API call without having to worry about the cursor.
+
+#### Warning 🚨
+
+The `Full Keyword Search` API can take quite a long time to respond, due to all the requests it has to send internally. Make sure to set a high enough timeout (> 10 mins) if you are configuring your own HTTP requests. If you are using one of the EnsembleData API packages, this is handled for you!
+
+### Extra parameters
+
+The `Full Keyword Search` API supports mostly the same parameters as the `Keyword Search` API. For a complete overview of the available parameters, please refer to the [API Documentation](https://ensembledata.com/apis/docs#tag/Tiktok/operation/tiktok_full_keyword_search) for this endpoint.
+
+
+## User Posts
+
+The EnsembleData TikTok API enables you to fetch a user's posts and, if publicly available, the posts they have liked. Let's first look at an example profile to get our bearings. 
+
+Here we've got the user profile of [Zach King](https://www.tiktok.com/@zachking), a popular TikTok creator.
+
+![Image](./assets/tiktok-user-posts.png)
+
+## Where to find user posts
+The user posts we will get are those that appear in the `Videos` tab of the user's profile. By default, these post are sorted from newest to oldest, and the API, which we will look at below, retrieves the posts in this same order. 
+
+Warning 🚨
+
+Some users have pinned posts, indicated by the red `pinned` label on the post in the `Videos` tab. These posts will appear first in the responses from the EnsembleData API, just as they do on TikTok. Be mindful that these pinned posts are in most cases not the most recent posts by the user. As such you may need to filter these posts out depending on your use case.
+
+## Where to find a user's liked posts
+
+Additionally, we can see that `Zach King` has not made his liked posts public, as indicated by the lock 🔒 on the `Liked` tab to the right of the `Videos` tab. Therefore, we won't be able to fetch his liked posts. 
+
+
+
+## User Posts From Username API
+
+[API Documentation](https://ensembledata.com/apis/docs#tag/Tiktok/operation/tiktok_user_posts_from_username)
+
+For the `User Posts From Username` endpoint we'll need a `username`, obviously, and a `depth` parameter, less obviously. What is the `depth` parameter, you ask? 
+
+The `depth` parameter tells the API how many chunks of posts to fetch. Each chunk contains 10 posts for this endpoint. Therefore, sending a `depth` of 1 will fetch 10 posts, a `depth` of 2 will fetch 20 posts, and so on. You *must* provide a depth parameter, to tell us how many posts to get.
+
+In addition, the posts 
+
+Tip ✅
+
+For more information of using `depth` throughout the EnsembleData API, see the ["What is depth?"](/faqs/depth) page.
+
+We're ready to fetch some user posts. ¡Vamos!
+
+
+```python
+from ensembledata.api import EDClient
+
+client = EDClient("API_TOKEN")
+result = client.tiktok_user_posts_from_username(
+    username="zachking",
+    depth=1,
+)
+
+posts = result.data["data"]
+next_cursor = result.data["nextCursor"] # We'll need this later
+
+print("Posts:", len(posts))
+```
+
+**Output:**
+```bash
+Posts: 10
+```
+
+Great, we've got the most recent 10 posts! Well... not quite; the user may have pinned some posts at the top of their profile. Note: it's possible, though unlikely, the pinned posts are the most recent. To be sure, you should check their timestamps.
+
+### Filtering out pinned posts
+
+For simplicity, let's see how we can filter the pinned posts out.
+
+```python
+posts = [post for post in posts if not post["is_top"]]
+print("Posts:", len(posts))
+```
+
+**Output:**
+```bash
+Posts: 8
+```
+
+
+Piece of cake! 
+
+### Fetching more posts
+
+Now let's talk about the options you have for fetching more posts.
+
+#### Using depth
+
+The simplest way to fetch more posts is to simply send a larger `depth` parameter. For example, to fetch 50 posts, instead of 10, you would send a `depth` of 5 instead of 1. However, if you've already sent a request to get the first 10 posts, sending a `depth` of 5 will get you 50 posts, **including the 10 you already have**... which is not ideal. In this case, you may want to use the `cursor` parameter instead.
+
+#### Using the cursor
+
+Each response contains a `nextCursor` value. You can use this cursor to get the next chunk of posts. Here's how you can do it:
+
+
+```python
+result = client.tiktok_user_posts_from_username(
+    username="zachking",
+    depth=1,
+    cursor=next_cursor, 
+)
+
+next_posts = result.data["data"]
+next_cursor = result.data.get("nextCursor")
+```
+
+#### Combining depth and cursor
+
+You can also combine the `depth` and `cursor` parameters to get a specific number of posts, starting from where you left off. For example, let's get the first 10 posts, then get the next 50 posts if there is a `nextCursor`. If there is no next cursor, it means there are no more posts.
+
+```python
+posts = list()
+result = client.tiktok_user_posts_from_username(
+    username="zachking",
+    depth=1,
+)
+posts.extend(result.data["data"])
+next_cursor = result.get("nextCursor")
+
+if next_cursor is not None:
+    result = client.tiktok_user_posts_from_username(
+        username="zachking",
+        depth=5,
+        cursor=next_cursor,
+    )
+    posts.extend(result.data["data"])
+
+print("Posts:", len(posts))
+```
+
+**Output:**
+```bash
+Posts: 60
+```
+
+### Specify an oldest timestamp
+
+The `User Posts From Username` endpoint also accepts an `oldest_createtime` parameter ([unix timestamp](https://en.wikipedia.org/wiki/Unix_time)). This parameter acts as a stopping condition when used in combination with the `depth` parameter. Internally, `depth` represent the number of requests the EnsembleData API will try to send in sequence. If you specify an `oldest_createtime`, the API will stop fetching posts when it reaches a post with a timestamp older than the one you specified. 
+
+For example, you may want to fetch up to 100 of a user's posts, but only those which are more recent than a certain date. You can do this by specifying a `depth` of 10, and an `oldest_createtime` of the cutoff time.
+
+
+```python
+result = client.tiktok_user_posts_from_username(
+    username="zachking",
+    depth=10,
+    oldest_createtime=1723806137,
+)
+```
+
+Warning 🚨
+    
+The `oldest_createtime` only tells the API when to stop fetching posts. However, the posts are fetched in chunks. In the last chunk of fetched posts there may be some posts newer, and some older than the `oldest_createtime` you specified. Therefore, some of the posts returned by the API are likely to be older than the `oldest_createtime` you specified. You should filter these out in your application if required. We don't filter them out to give you the flexibility to decide what to do with them.
+
+
+### Alternative method
+
+You can optionally tell the API to use a different method to scrape the user's posts by passing `alternative_method` as `True`. The reponse payload will differ from the default method. We suggest you peruse the response payloads of both methods to see which one suits your needs better.
+
+```python
+result = client.tiktok_user_posts_from_username(
+    username="zachking",
+    depth=1,
+    alternative_method=True,
+)
+```
+
+## User Posts From Secuid API
+
+[API Documentation](https://ensembledata.com/apis/docs#tag/Tiktok/operation/tiktok_user_posts_from_secuid)
+
+This endpoint is functionally the same as the `User Posts From Username` API, the only difference being you need to supply the `secuid` of the user instead of the `username`. 
+
+```python
+result = client.tiktok_user_posts_from_secuid(
+    sec_uid="MS4wLjABAAAA...",
+    depth=1,
+)
+```
+
+The endpoint accepts all the same parameters as the `User Posts From Username` API. Please refer to the above sections for more details on how you can use this endpoint.
 
 <br>
 <br>
@@ -314,11 +629,179 @@ posts = result["data"]
 <br>
 <br>
 
-## Post Comments ✨
+# Post Comments
 
-### Comments
-### Replies
+## Post Comments API
 
+[API Documentation](https://ensembledata.com/apis/docs#tag/Tiktok/operation/tiktok_post_comments)
+
+To fetch comments we'll first need to find the post id, also known as the `aweme_id`.
+
+Where can I find the `aweme_id`? 🙋‍♂️
+     
+You can find the `aweme_id` in the URL of the post. For example, in the URL `https://www.tiktok.com/@username/video/6849400000000` the `aweme_id` is `6849400000000`. Otherwise, you can also find the `aweme_id` in the response for any of the endpoints which return post data.
+
+Let's fetch some comments!
+
+
+```python
+from ensemble.api import EDClient
+
+client = EDClient("API_TOKEN")
+result = client.tiktok.post_comments(aweme_id="6849400000000")
+
+comments = result.data["comments"]
+next_cursor = result.data("nextCursor")
+
+print("Comments fetched:", len(comments))
+print("Total comments:", result.data["total"])
+```
+
+**Output:**
+
+```bash
+Comments fetched: 30
+Total comments: 136
+```
+
+Sweet! Let's see what data we retrieved. 
+
+### Comment data
+
+Inside each comment object you'll find everything you need to know about the comment, including a variety of data about the commenter.
+
+```python hl_lines="5"
+comment = comments[0]
+user = comment["user"]
+
+print("=== First comment ===")
+print("comment_id:", comment["cid"]) # We'll need this for fetching replies!
+print("timestamp:", comment["create_time"])
+print("text:", comment["text"])
+print("likes:", comment["digg_count"])
+print("replies:", comment["reply_comment_count"])
+print("username:", user["unique_id"])
+```
+
+If you need to get the more details about the commenter, the `username`, `uid` and `sec_uid` fields will be useful for calling other API endpoints such as `User Info From Secuid`, `User Posts From Username` or `User Followers`.
+
+```python
+print("sec_uid:", user["sec_uid"])
+print("user_id:", user["uid"])
+```
+
+### Fetching more comments
+
+As you can see the `Post Comments` API gives us up to 30 comments per request. Using the `nextCursor` we got from the previous response, we can get the next batch of comments.
+
+```python
+result = client.tiktok.post_comments(
+    aweme_id="6849400000000", 
+    cursor=next_cursor
+)
+comments = result.data["comments"]
+next_cursor = result.data.get("nextCursor")
+```
+
+You can repeat this step over and over until you've fetched as many comments as you need.
+
+### Cursor handling example
+
+Here's an example of how you can handle the cursor in a loop to fetch comments for a given post.
+
+```python
+comments = list()
+cursor = None
+ITERATIONS = 10
+
+for _ in range(ITERATIONS):
+    result = client.tiktok.post_comments(
+        aweme_id="6849400000000", 
+        cursor=cursor
+    )
+    comments.extend(result.data["comments"])
+    cursor = result.data.get("nextCursor")
+    
+    # If there is no next cursor, we've fetched all the available comments
+    if cursor is None:
+        break
+
+print("Number of comments:", len(comments))
+```
+
+**Output:**
+
+```bash
+Number of comments: 300
+```
+
+## Post Comment Replies API
+
+[API Documentation](https://ensembledata.com/apis/docs#tag/Tiktok/operation/tiktok_post_comment_replies)
+
+Especially on very popular posts TikTok, you'll find that comments can get quite a lot of replies. Scraping replies can help extract more insights from the comment section, so let's see how it's done.
+
+```python
+result = client.tiktok.post_comment_replies(
+    aweme_id="6849400000000", 
+    comment_id="6849400000000"
+)
+```
+
+Pretty simple, we just need to specify which `comment_id` we want to fetch replies for. We saw where to get the comment id from in a [previous section](#comment-data).
+
+The structure of the response is almost identical to that of the `Post Comments` API, which we saw in the last section.
+
+```python
+replies = result.data["comments"]
+print("Replies fetched:", len(replies))
+print("Total replies:", result.data["total"])
+
+next_cursor = result.data.get("nextCursor")
+```
+
+**Output:**
+
+```bash
+Replies fetched: 30
+Total replies: 66
+```
+
+Ok great, but I want those other 36 replies too! Let's fetch them.
+
+### Fetching more replies
+
+Just like with the `Post Comments` API, we can use the `nextCursor` to fetch more replies. Let's loop through the replies until we've fetched them all.
+
+```python
+replies = list()
+cursor = None
+requests_sent = 0
+
+while True:
+    result = client.tiktok.post_comment_replies(
+        aweme_id="6849400000000", 
+        comment_id="6930120000000",
+        cursor=cursor
+    )
+    replies.extend(result.data["comments"])
+    cursor = result.data.get("nextCursor")
+    requests_sent += 1
+    
+    # If there is no next cursor, we've fetched all the available replies
+    if cursor is None:
+        break
+
+print("Replies:", len(replies))
+print("Requests sent:", requests_sent)
+```
+
+**Output:**
+
+```bash
+Replies: 66
+Requests sent: 3
+```
 
 <br>
 <br>
@@ -496,6 +979,10 @@ Great, it sent us the next 20 books, and another `nextCursor` we can use to get 
 Viola, this is how you can use a cursor to iterate over a list of items via API.
 
 ### References
+
+The contents of this guide are taken from the [Definitive EnsembleData Guide](https://ensembledata.github.io/ensembledata-guide). Check it out for a more extensive look into the EnsembleData API with code examples in various languages.
+
+#### Other References
 
 - [EnsembleData API Documentation](https://ensembledata.com/apis/docs)
 - [EnsembleData TikTok API](https://ensembledata.com/tiktok-api)
